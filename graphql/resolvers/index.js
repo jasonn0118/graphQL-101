@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const Event = require('../../models/event');
 const User = require('../../models/user');
+const Booking = require('../../models/booking');
 
 module.exports = {
   events: async () => {
@@ -12,6 +13,20 @@ module.exports = {
           date: new Date(event._doc.date).toISOString(),
         };
       });
+    } catch (err) {
+      throw err;
+    }
+  },
+  bookings: async () => {
+    try {
+      const bookings = await Booking.find();
+      return bookings.map(booking => {
+        return {
+          ...booking._doc,
+          createdAt: new Date(booking._doc.createdAt).toISOString(),
+          updatedAt: new Date(booking._doc.updatedAt).toISOString()
+        };
+      })
     } catch (err) {
       throw err;
     }
@@ -46,7 +61,6 @@ module.exports = {
         throw new Error('User exists already');
       }
       const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
-
       const user = new User({
         email: args.userInput.email,
         password: hashedPassword,
@@ -58,4 +72,27 @@ module.exports = {
       throw err;
     };
   },
+  bookEvent: async (args) => {
+    const fetchedEvent = await Event.findOne({ _id: args.eventId });
+    const booking = new Booking({
+      user: '5f0fa27bf05326694cdd33c6',
+      event: fetchedEvent
+    });
+    const result = await booking.save();
+    return {
+      ...result._doc,
+      createdAt: new Date(result._doc.createdAt).toISOString(),
+      updatedAt: new Date(result._doc.updatedAt).toISOString()
+    }
+  },
+  cancelBooking: async (args) => {
+     try{
+       const booking = await Booking.findById(args.bookingId);
+       const event = {...booking.event._doc, _id: booking.event.id}
+       await Booking.deleteOne({_id: args.bookingId})
+       return event;
+     } catch (err){
+       throw err;
+     }
+  }
 };
