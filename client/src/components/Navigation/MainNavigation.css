@@ -21,16 +21,26 @@
     padding: 0;
     margin: 0;
     list-style: none;
+    align-items: center;
 }
 .main-nav_items li {
     margin: 0 1rem;
 }
-.main-nav_items a {
+.main-nav_items a,
+.main-nav_items button {
     text-decoration: none;
     color: rgb(0, 0, 0);
+    border: none;
+    font: inherit;
+    background: transparent;
+    cursor: pointer;
+    vertical-align: middle;
+    margin: 0;
 }
 .main-nav_items a:hover,
 .main-nav_items a:active,
-.main-nav_items a.active {
+.main-nav_items a.active,
+.main-nav_items button:hover,
+.main-nav_items button:active {
     color: rgb(255, 243, 79)
 }
