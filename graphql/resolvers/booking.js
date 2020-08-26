@@ -9,6 +9,7 @@ module.exports = {
     }
     try {
       const bookings = await Booking.find();
+      console.log(bookings,'\n >>>>>>>>>>>BOOKINGS')
       return bookings.map((booking) => {
         return {
           ...booking._doc,
